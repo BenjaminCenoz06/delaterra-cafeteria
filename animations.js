@@ -293,13 +293,5 @@
       });
     });
 
-    /* footer: sube desde abajo como una cortina al llegar al final (no hay sticky en celular) */
-    const foot = $(".site-footer");
-    if (foot) {
-      gsap.fromTo($(".foot-top", foot), { y: 90, opacity: 0.2 }, {
-        y: 0, opacity: 1, ease: "none",
-        scrollTrigger: { trigger: foot, start: "top bottom", end: "top 30%", scrub: true },
-      });
-    }
   }
 })();

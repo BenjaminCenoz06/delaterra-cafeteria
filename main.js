@@ -303,6 +303,43 @@ document.querySelectorAll(".stats li").forEach((li, i) => {
   document.fonts.ready.then(fitMark);
   fitMark();
   window.addEventListener("resize", fitMark);
+
+  /* Revelación sticky: solo si el footer cabe en la pantalla. En celular se compacta con acordeones
+     para que entre y la cortina (el contenido) lo destape igual que en PC. */
+  const foot = document.querySelector(".site-footer");
+  const updateReveal = () => {
+    foot.classList.remove("can-reveal");
+    foot.classList.toggle("can-reveal", foot.offsetHeight <= window.innerHeight - 4);
+  };
+  window.updateFooterReveal = updateReveal;
+  document.fonts.ready.then(updateReveal);
+  updateReveal();
+  window.addEventListener("resize", updateReveal);
+  window.addEventListener("load", updateReveal);
+
+  // acordeones del footer (solo se ven como acordeón en pantallas angostas por CSS)
+  const mq = matchMedia("(max-width: 767px)");
+  document.querySelectorAll(".foot-col:not(.foot-visit)").forEach((col) => {
+    const h = col.querySelector("h4"), ul = col.querySelector("ul");
+    if (!h || !ul) return;
+    h.setAttribute("role", "button"); h.setAttribute("tabindex", "0"); h.setAttribute("aria-expanded", "false");
+    col.classList.add("is-closed");
+    const toggle = () => {
+      if (!mq.matches) return;
+      const open = col.classList.contains("is-closed");
+      h.setAttribute("aria-expanded", String(open));
+      if (open) {
+        col.classList.remove("is-closed");
+        gsap.fromTo(ul, { height: 0, opacity: 0 }, { height: "auto", opacity: 1, duration: 0.45, ease: "power3.out", onComplete: updateReveal });
+        updateReveal();
+      } else {
+        gsap.to(ul, { height: 0, opacity: 0, duration: 0.35, ease: "power3.inOut", onComplete: () => { col.classList.add("is-closed"); gsap.set(ul, { clearProps: "height,opacity" }); updateReveal(); } });
+      }
+    };
+    h.addEventListener("click", toggle);
+    h.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggle(); } });
+  });
+
   if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
   // bloque de color que cruza cada palabra; a mitad del barrido aparece el texto
@@ -317,14 +354,20 @@ document.querySelectorAll(".stats li").forEach((li, i) => {
       .fromTo(blk, { xPercent: 0 }, { xPercent: 101, duration: 0.4, ease: "none", immediateRender: false }, i * 0.1 + 0.4);
   });
   let played = false;
+  const play = () => { if (!played) { played = true; tl.play(0); } };
+  const rewind = () => { played = false; tl.pause(0); };
+  // footer sticky: el barrido corre cuando la cortina (main) lo va destapando; se repite al volver
   ScrollTrigger.create({
     trigger: "main", start: "bottom 70%",
-    onEnter: () => { if (!played) { played = true; tl.play(0); } },
+    onEnter: () => { if (foot.classList.contains("can-reveal")) play(); },
+    onLeaveBack: () => { if (foot.classList.contains("can-reveal")) rewind(); },
   });
-  // en pantallas chicas el footer no es sticky: dispara cuando entra a la vista
-  if (!matchMedia("(min-width: 768px) and (min-height: 700px)").matches) {
-    ScrollTrigger.create({ trigger: mark, start: "top 95%", onEnter: () => { if (!played) { played = true; tl.play(0); } } });
-  }
+  // si el footer no entra en la pantalla (no es sticky), corre cuando aparece
+  ScrollTrigger.create({
+    trigger: mark, start: "top 95%",
+    onEnter: () => { if (!foot.classList.contains("can-reveal")) play(); },
+    onLeaveBack: () => { if (!foot.classList.contains("can-reveal")) rewind(); },
+  });
 })();
 
 /* ---------- Header: se muestra al salir del hero ---------- */
