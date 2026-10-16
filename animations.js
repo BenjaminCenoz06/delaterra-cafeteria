@@ -155,6 +155,36 @@
     });
   });
 
+  /* ---------- Carta a mano: el título, los subtítulos y cada plato "se escriben" ---------- */
+  const carta = $(".carta");
+  if (carta) {
+    gsap.fromTo($(".carta-title", carta), { clipPath: "inset(0 100% 0 0)" }, {
+      clipPath: "inset(0 0% 0 0)", duration: 1.4, ease: "power2.inOut",
+      scrollTrigger: { trigger: carta, start: "top 82%", once: true },
+    });
+    $$(".hand-h", carta).forEach((h) => {
+      gsap.fromTo(h, { clipPath: "inset(0 100% -10px 0)" }, {
+        clipPath: "inset(0 -6px -10px 0)", duration: 1, ease: "power2.inOut",
+        scrollTrigger: { trigger: h, start: "top 90%", once: true },
+      });
+    });
+    $$(".group", carta).forEach((g) => {
+      gsap.fromTo($$(".items .n, .items small", g), { clipPath: "inset(0 100% 0 0)" }, {
+        clipPath: "inset(0 -4px 0 0)", duration: 0.9, ease: "power2.out", stagger: 0.07, delay: 0.25,
+        scrollTrigger: { trigger: g, start: "top 82%", once: true },
+      });
+      gsap.from($$(".items .p", g), {
+        autoAlpha: 0, scale: 0.6, transformOrigin: "100% 50%", duration: 0.5, ease: "back.out(2)", stagger: 0.07, delay: 0.5,
+        scrollTrigger: { trigger: g, start: "top 82%", once: true },
+      });
+    });
+    // la hoja se apoya suavemente al entrar
+    gsap.from(carta, {
+      y: 50, rotation: -1.2, autoAlpha: 0, duration: 1.2, ease: "power3.out",
+      scrollTrigger: { trigger: carta, start: "top 90%", once: true },
+    });
+  }
+
   /* ---------- Bandas en movimiento (reaccionan a la velocidad del scroll) ---------- */
   $$("[data-marquee]").forEach((m) => {
     const track = $(".mq-track", m), group = $(".mq-group", track);

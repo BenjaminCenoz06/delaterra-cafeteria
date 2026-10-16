@@ -632,3 +632,68 @@ main { overflow: clip; border-radius: 0 0 clamp(18px, 3vw, 34px) clamp(18px, 3vw
   .foot-legal { flex-direction: column; gap: .35rem; margin-top: .9rem; padding-top: .8rem; font-size: 10px; }
 }
 @media (max-width: 767px) { .foot-btn b { font-size: 14.5px; white-space: nowrap; } .foot-visit .foot-btn { padding: .6rem .7rem; } }
+
+/* =================== Carta a mano =================== */
+.menu-grid { grid-template-columns: minmax(0, 330fr) minmax(0, 800fr); }
+.carta {
+  --ink: #2a2130; position: relative; grid-column: 2; display: grid; grid-template-columns: 1fr 1fr; align-items: start;
+  column-gap: clamp(2rem, 4.2vw, 4.4rem); padding: clamp(1.6rem, 3.4vw, 3.2rem) clamp(1.4rem, 3.6vw, 3.4rem) clamp(2rem, 3.6vw, 3.4rem);
+  color: var(--ink); font-family: "Kalam", "Caveat", cursive;
+  background-color: #fbf3dc;
+  background-image:
+    repeating-linear-gradient(0deg, rgba(120, 92, 50, .07) 0 1px, transparent 1px 3px),
+    repeating-linear-gradient(90deg, rgba(120, 92, 50, .07) 0 1px, transparent 1px 3px),
+    radial-gradient(120% 80% at 50% 0%, rgba(255, 255, 255, .55), transparent 70%);
+  border-radius: 6px;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, .8) inset, 0 40px 70px -34px rgba(54, 33, 28, .6), 0 6px 14px rgba(54, 33, 28, .12);
+}
+/* pliegue central, como el cuaderno de la foto */
+.carta::before {
+  content: ""; position: absolute; left: 50%; top: 0; bottom: 0; width: 46px; transform: translateX(-50%); pointer-events: none;
+  background: linear-gradient(90deg, rgba(54, 33, 28, 0), rgba(54, 33, 28, .13) 48%, rgba(54, 33, 28, .2) 50%, rgba(54, 33, 28, .1) 53%, rgba(54, 33, 28, 0));
+}
+.carta-title {
+  grid-column: 1 / -1; justify-self: center; margin-bottom: clamp(1.4rem, 2.6vw, 2.4rem); position: relative;
+  font-family: "Kalam", cursive; font-weight: 700; font-style: normal; font-size: clamp(2.6rem, 5vw, 4.2rem); line-height: 1; transform: rotate(-3deg);
+}
+.carta-title::after {
+  content: ""; display: block; height: 14px; margin-top: .2rem;
+  background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 14' preserveAspectRatio='none'><path d='M2 9C60 2 130 12 190 6S270 3 298 7' fill='none' stroke='%232a2130' stroke-width='2.4' stroke-linecap='round'/></svg>") no-repeat center / 100% 100%;
+}
+.carta .page { display: flex; flex-direction: column; gap: clamp(1.6rem, 2.6vw, 2.6rem); position: relative; z-index: 1; }
+.carta .group { margin: 0; }
+.hand-h {
+  display: inline-block; position: relative; font-family: "Kalam", cursive; font-weight: 700; font-style: normal; font-size: clamp(1.4rem, 2vw, 1.9rem);
+  line-height: 1.05; margin-bottom: .55rem; color: var(--ink);
+}
+.hand-h em { font-style: normal; font-weight: 400; font-size: .72em; opacity: .85; }
+.hand-h::after {
+  content: ""; position: absolute; left: -2px; right: -6px; bottom: -7px; height: 7px;
+  background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 8' preserveAspectRatio='none'><path d='M1 5C40 1 90 7 140 3S190 3 199 4' fill='none' stroke='%232a2130' stroke-width='2' stroke-linecap='round'/></svg>") no-repeat left / 100% 100%;
+}
+.carta .items { margin-top: .9rem; }
+.carta .items li {
+  display: grid; grid-template-columns: auto 1fr auto; column-gap: .45rem; align-items: baseline; padding: .26rem 0;
+  font-family: "Kalam", cursive; font-stretch: 100%; text-transform: none; letter-spacing: 0; font-size: clamp(1rem, 1.18vw, 1.18rem); line-height: 1.25; color: var(--ink);
+}
+.carta .items li::after {
+  content: ""; grid-column: 2; grid-row: 1; align-self: end; margin-bottom: .42em; min-width: 8px; border-bottom: 1.6px dotted rgba(42, 33, 48, .45);
+}
+.carta .items .n { grid-column: 1; grid-row: 1; }
+.carta .items .p { grid-column: 3; grid-row: 1; font-family: "Kalam", cursive; font-weight: 700; font-size: 1em; letter-spacing: 0; white-space: nowrap; }
+.carta .items small {
+  grid-column: 1 / -1; grid-row: 2; max-width: none; margin-top: -.1rem; font-family: "Kalam", cursive; font-weight: 400; font-size: .86em; line-height: 1.25; opacity: .78;
+}
+.carta .items li:hover, .carta .items li:active { color: #b4672a; padding-left: .4rem; }
+.carta .items li:hover .p, .carta .items li:active .p { color: #b4672a; }
+
+@media (max-width: 1099px) { .menu-grid { grid-template-columns: 1fr; } .carta { grid-column: 1; } }
+@media (max-width: 700px) {
+  .carta { grid-template-columns: 1fr; padding: 1.6rem 1.2rem 2rem; row-gap: 0; border-radius: 4px; }
+  .carta::before { display: none; }
+  .carta .page-r { margin-top: 2.2rem; padding-top: 2rem; border-top: 1.5px dashed rgba(42, 33, 48, .3); }
+  .carta .page-r::before { content: ""; position: absolute; left: 0; right: 0; top: -9px; height: 16px; background: linear-gradient(rgba(54, 33, 28, 0), rgba(54, 33, 28, .07), rgba(54, 33, 28, 0)); pointer-events: none; }
+  .carta .items li { font-size: 1.04rem; }
+  .carta-title { font-size: 2.8rem; }
+}
+@media (min-width: 1100px) { .menu .col-intro { position: sticky; top: 110px; } }
