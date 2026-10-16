@@ -7,6 +7,9 @@
   <meta name="description" content="Café bistró: almuerzos y pastelería artesanal. Obispo Trejo 305, Córdoba. Abierto todos los días.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="preload" as="image" href="images/dlt-06.webp" fetchpriority="high">
   <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,500..900&family=Newsreader:opsz,wght@6..72,400&family=Roboto:wght@400&family=Cormorant+Garamond:ital,wght@1,500&family=Courier+Prime&family=Kalam:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
@@ -48,7 +51,7 @@
             <svg class="arrow" data-intro-hero-arrow viewBox="0 0 8 21" fill="none" aria-hidden="true"><path d="M4 0v19M1 16l3 3.5L7 16" stroke="currentColor" stroke-width="1.2"/></svg>
             <div class="background-picture">
               <picture>
-                <img src="images/dlt-06.jpg" alt="Interior de de la terra con luz de ventana">
+                <img src="images/dlt-06.webp" fetchpriority="high" decoding="async" alt="Interior de de la terra con luz de ventana">
               </picture>
             </div>
           </div>
@@ -92,7 +95,7 @@
           <div class="col col-intro reveal">
             <h3 class="script-sm">Explora nuestra carta</h3>
             <p class="body">Café con leche y bollería, almuerzos caseros y pastelería artesanal, con ingredientes de excelente calidad.</p>
-            <img class="menu-photo" src="images/dlt-08.jpg" alt="Charlotte de frutos rojos de la casa">
+            <img class="menu-photo" src="images/dlt-08.webp" srcset="images/sm/dlt-08.webp 720w, images/dlt-08.webp 1600w" sizes="(max-width: 1099px) 90vw, 330px" loading="lazy" decoding="async" alt="Charlotte de frutos rojos de la casa">
           </div>
 
           <div class="carta" aria-label="Carta de de la terra">
@@ -188,7 +191,7 @@
         </div>
 
         <article class="feature wrap reveal" id="visitanos">
-          <img class="feature-img" src="images/dlt-15.jpg" alt="Medialunas, croissants y tortas de la casa">
+          <img class="feature-img" src="images/dlt-15.webp" srcset="images/sm/dlt-15.webp 720w, images/dlt-15.webp 1600w" sizes="(max-width: 700px) 100vw, 1343px" loading="lazy" decoding="async" alt="Medialunas, croissants y tortas de la casa">
           <div class="feature-copy">
             <h3 class="script-sm">Menú del día</h3>
             <p class="feature-sub">Casero, abundante y distinto cada día</p>
@@ -215,14 +218,14 @@
           </div>
 
           <article class="post reveal">
-            <img src="images/dlt-11.jpg" alt="Disfrutando un latte frío en de la terra">
+            <img src="images/dlt-11.webp" srcset="images/sm/dlt-11.webp 720w, images/dlt-11.webp 1600w" sizes="(max-width: 1099px) 90vw, 432px" loading="lazy" decoding="async" alt="Disfrutando un latte frío en de la terra">
             <div class="post-head"><h4 class="script-sm">El domingo es un día especial</h4><span class="cat">Domingos</span></div>
             <p class="body">Desde el arranque, el domingo en de la terra se vive distinto: mesa tranquila, buena música y algo rico para empezar el día…</p>
             <a class="tag" href="https://www.instagram.com/delaterrabistro/" target="_blank" rel="noopener">Leer más</a>
           </article>
 
           <article class="post reveal">
-            <img src="images/dlt-17.jpg" alt="Flores frescas en la mesa de de la terra">
+            <img src="images/dlt-17.webp" srcset="images/sm/dlt-17.webp 720w, images/dlt-17.webp 1600w" sizes="(max-width: 1099px) 90vw, 432px" loading="lazy" decoding="async" alt="Flores frescas en la mesa de de la terra">
             <div class="post-head"><h4 class="script-sm">Flores en cada mesa</h4><span class="cat">Ambiente</span></div>
             <p class="body">Si alguna vez entraste a de la terra, probablemente notaste algo especial: flores frescas, luz tenue y detalles pensados…</p>
             <a class="tag" href="https://www.instagram.com/delaterrabistro/" target="_blank" rel="noopener">Leer más</a>
@@ -274,7 +277,7 @@
     <!-- Suscripción: video + trío de imágenes a todo el ancho -->
     <section class="subscribe" id="suscripcion">
       <div class="sub-video">
-        <video autoplay muted loop playsinline preload="auto" poster="images/dlt-19.jpg">
+        <video autoplay muted loop playsinline preload="metadata" poster="images/dlt-19.webp">
           <source src="videos/molienda.mp4" type="video/mp4">        </video>
         <div class="sub-copy reveal">
           <h3>Siempre dan ganas de volver.</h3>
@@ -288,9 +291,9 @@
         </div>
       </div>
       <div class="sub-trio">
-        <figure><img src="images/dlt-26.jpg" alt="Carta y latte art sobre la mesa"></figure>
-        <figure><img src="images/dlt-09.jpg" alt="Chocolate caliente y cuaderno"></figure>
-        <figure><img src="images/dlt-25.jpg" alt="Lirios blancos en el salón"></figure>
+        <figure><img src="images/dlt-26.webp" srcset="images/sm/dlt-26.webp 720w, images/dlt-26.webp 1600w" sizes="(max-width: 800px) 78vw, 34vw" loading="lazy" decoding="async" alt="Carta y latte art sobre la mesa"></figure>
+        <figure><img src="images/dlt-09.webp" srcset="images/sm/dlt-09.webp 720w, images/dlt-09.webp 1600w" sizes="(max-width: 800px) 78vw, 34vw" loading="lazy" decoding="async" alt="Chocolate caliente y cuaderno"></figure>
+        <figure><img src="images/dlt-25.webp" srcset="images/sm/dlt-25.webp 720w, images/dlt-25.webp 1600w" sizes="(max-width: 800px) 78vw, 34vw" loading="lazy" decoding="async" alt="Lirios blancos en el salón"></figure>
       </div>
     </section>
 
@@ -423,7 +426,7 @@
             <circle cx="70" cy="70" r="40" stroke="currentColor" stroke-width="1"/>
             <text><textPath href="#sealc">CAFÉ BISTRÓ · DE LA TERRA · CÓRDOBA · TODOS LOS DÍAS ·</textPath></text>
             <clipPath id="sealclip"><circle cx="70" cy="70" r="37"/></clipPath>
-            <image href="images/dlt-logo.jpg" x="30" y="30" width="80" height="80" clip-path="url(#sealclip)" preserveAspectRatio="xMidYMid slice"/>
+            <image href="images/dlt-logo.webp" x="30" y="30" width="80" height="80" clip-path="url(#sealclip)" preserveAspectRatio="xMidYMid slice"/>
           </svg>
         </div>
       </div>
@@ -436,10 +439,10 @@
     </div>
   </footer>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"></script>
-  <script src="main.js"></script>
-  <script src="animations.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js" defer></script>
+  <script src="main.js" defer></script>
+  <script src="animations.js" defer></script>
 </body>
 </html>

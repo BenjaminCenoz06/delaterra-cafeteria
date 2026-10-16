@@ -1,7 +1,12 @@
 gsap.registerPlugin(ScrollTrigger);
+// en celular la barra del navegador aparece/desaparece: no recalcular todo en cada cambio de alto
+ScrollTrigger.config({ ignoreMobileResize: true, autoRefreshEvents: "visibilitychange,DOMContentLoaded,load" });
+
+/* debounce para los handlers de resize (evita recalcular layout decenas de veces por segundo) */
+const debounce = (fn, ms = 150) => { let t; return (...a) => { clearTimeout(t); t = setTimeout(() => fn(...a), ms); }; };
 
 /* ---------- Scroll suave (Lenis) sincronizado con ScrollTrigger ---------- */
-const lenis = new Lenis();
+const lenis = new Lenis({ lerp: 0.1, smoothWheel: true });
 lenis.on("scroll", ScrollTrigger.update);
 gsap.ticker.add((t) => lenis.raf(t * 1000));
 gsap.ticker.lagSmoothing(0);
@@ -19,7 +24,7 @@ function fitTitle() {
   }
 }
 document.fonts.ready.then(() => { fitTitle(); ScrollTrigger.refresh(); });
-window.addEventListener("resize", fitTitle);
+window.addEventListener("resize", debounce(fitTitle));
 fitTitle();
 
 /* ---------- Aparición suave de las secciones ---------- */
@@ -46,16 +51,16 @@ gsap.utils.toArray(".doodle path, .rule path").forEach((p) => {
 
 /* ---------- Carrusel de productos ---------- */
 (() => {
-  const U = (id) => `images/${id}`;
+  const U = (id) => `images/sm/${id}`;
   const products = [
-    { n: "Medialunas recién horneadas", p: "Pastelería", o: "", i: "dlt-15.jpg" },
-    { n: "Milanesa de peceto con puré", p: "Almuerzos", o: "", i: "dlt-13.jpg" },
-    { n: "Torta vasca", p: "Pastelería", o: "", i: "dlt-16.jpg" },
-    { n: "Sorrentinos vegetarianos", p: "Almuerzos", o: "", i: "dlt-07.jpg" },
-    { n: "Brownie de chocolate blanco", p: "Pastelería", o: "", i: "dlt-24.jpg" },
-    { n: "Ensalada de la casa", p: "Almuerzos", o: "", i: "dlt-26.jpg" },
-    { n: "Mousse de dulce de leche", p: "Pastelería", o: "", i: "dlt-09.jpg" },
-    { n: "Café con leche y bollería", p: "Café", o: "", i: "dlt-19.jpg" },
+    { n: "Medialunas recién horneadas", p: "Pastelería", o: "", i: "dlt-15.webp" },
+    { n: "Milanesa de peceto con puré", p: "Almuerzos", o: "", i: "dlt-13.webp" },
+    { n: "Torta vasca", p: "Pastelería", o: "", i: "dlt-16.webp" },
+    { n: "Sorrentinos vegetarianos", p: "Almuerzos", o: "", i: "dlt-07.webp" },
+    { n: "Brownie de chocolate blanco", p: "Pastelería", o: "", i: "dlt-24.webp" },
+    { n: "Ensalada de la casa", p: "Almuerzos", o: "", i: "dlt-26.webp" },
+    { n: "Mousse de dulce de leche", p: "Pastelería", o: "", i: "dlt-09.webp" },
+    { n: "Café con leche y bollería", p: "Café", o: "", i: "dlt-19.webp" },
   ];
   const root = document.querySelector("[data-carousel]");
   if (!root) return;
@@ -69,7 +74,7 @@ gsap.utils.toArray(".doodle path, .rule path").forEach((p) => {
   track.innerHTML = products.map((x) => `
     <li class="car-item">
       <div class="car-media">
-        <img src="${U(x.i)}" alt="${x.n}" loading="lazy">
+        <img src="${U(x.i)}" alt="${x.n}" loading="lazy" decoding="async">
         <span class="car-play"></span>
         <div class="car-ctrl"><button type="button" aria-label="Pausar">${pauseIcon}</button><button type="button" aria-label="Silenciar">${muteIcon}</button></div>
       </div>
@@ -101,7 +106,7 @@ gsap.utils.toArray(".doodle path, .rule path").forEach((p) => {
   next.addEventListener("click", () => go(idx + 1));
   items.forEach((el, k) => el.querySelector(".car-media").addEventListener("click", () => go(k)));
   dots.forEach((d, k) => d.addEventListener("click", () => go(k)));
-  window.addEventListener("resize", () => go(idx, true));
+  window.addEventListener("resize", debounce(() => go(idx, true), 120));
   // deslizar con el dedo
   const vp = root.querySelector(".car-viewport");
   let sx = null, sy = null;
@@ -127,7 +132,7 @@ gsap.utils.toArray(".doodle path, .rule path").forEach((p) => {
   gsap.set(words[0], { yPercent: 0 });
   document.fonts.ready.then(size);
   size();
-  window.addEventListener("resize", size);
+  window.addEventListener("resize", debounce(size));
   if (reduce) return;
 
   const step = () => {
@@ -161,32 +166,32 @@ if (subVideo) {
 (() => {
   const board = document.getElementById("instaBoard");
   if (!board) return;
-  const U = (id) => `images/${id}`;
+  const U = (id) => `images/sm/${id}`;
   // x, y, w = % del tablero · r = rotación · a = proporción · f = marco polaroid
   const items = [
-    { i: "dlt-05.jpg", x: -1, y: 16, w: 13, r: 2, a: "3/4", z: 2 },
-    { i: "dlt-06.jpg", x: 13.5, y: 6.5, w: 16, r: -3, a: "1/1", f: 1, z: 3 },
-    { i: "dlt-11.jpg", x: 23.5, y: 18, w: 9, r: 5, a: "3/4", z: 5 },
-    { i: "dlt-14.jpg", x: 6, y: 38, w: 17, r: -2, a: "1/1", f: 1, z: 6 },
-    { i: "dlt-12.jpg", x: 3, y: 40, w: 6, r: 1, a: "3/4", z: 7 },
-    { i: "dlt-23.jpg", x: 35.5, y: 31, w: 10.5, r: 2, a: "3/4", f: 1, z: 8 },
-    { i: "dlt-20.jpg", x: 48, y: 10, w: 16, r: 4, a: "3/4", z: 4 },
-    { i: "dlt-10.jpg", x: 60, y: 33, w: 18, r: 2, a: "3/2", z: 9 },
-    { i: "dlt-18.jpg", x: 68, y: 12, w: 10, r: 2, a: "4/5", f: 1, z: 3 },
-    { i: "dlt-28.jpg", x: 80, y: 7, w: 9, r: 2, a: "3/4", z: 2 },
-    { i: "dlt-27.jpg", x: 90, y: 10, w: 10, r: -3, a: "3/4", f: 1, z: 3 },
-    { i: "dlt-22.jpg", x: 22, y: 59, w: 15, r: -2, a: "1/1", z: 10 },
-    { i: "dlt-21.jpg", x: 51, y: 51, w: 8, r: 3, a: "3/4", z: 11 },
-    { i: "dlt-08.jpg", x: 57, y: 50, w: 20, r: 2, a: "4/5", z: 12 },
-    { i: "dlt-13.jpg", x: 76, y: 48, w: 8, r: 3, a: "3/4", z: 13 },
-    { i: "dlt-26.jpg", x: 91, y: 59, w: 10, r: 3, a: "3/4", f: 1, z: 14 },
+    { i: "dlt-05.webp", x: -1, y: 16, w: 13, r: 2, a: "3/4", z: 2 },
+    { i: "dlt-06.webp", x: 13.5, y: 6.5, w: 16, r: -3, a: "1/1", f: 1, z: 3 },
+    { i: "dlt-11.webp", x: 23.5, y: 18, w: 9, r: 5, a: "3/4", z: 5 },
+    { i: "dlt-14.webp", x: 6, y: 38, w: 17, r: -2, a: "1/1", f: 1, z: 6 },
+    { i: "dlt-12.webp", x: 3, y: 40, w: 6, r: 1, a: "3/4", z: 7 },
+    { i: "dlt-23.webp", x: 35.5, y: 31, w: 10.5, r: 2, a: "3/4", f: 1, z: 8 },
+    { i: "dlt-20.webp", x: 48, y: 10, w: 16, r: 4, a: "3/4", z: 4 },
+    { i: "dlt-10.webp", x: 60, y: 33, w: 18, r: 2, a: "3/2", z: 9 },
+    { i: "dlt-18.webp", x: 68, y: 12, w: 10, r: 2, a: "4/5", f: 1, z: 3 },
+    { i: "dlt-28.webp", x: 80, y: 7, w: 9, r: 2, a: "3/4", z: 2 },
+    { i: "dlt-27.webp", x: 90, y: 10, w: 10, r: -3, a: "3/4", f: 1, z: 3 },
+    { i: "dlt-22.webp", x: 22, y: 59, w: 15, r: -2, a: "1/1", z: 10 },
+    { i: "dlt-21.webp", x: 51, y: 51, w: 8, r: 3, a: "3/4", z: 11 },
+    { i: "dlt-08.webp", x: 57, y: 50, w: 20, r: 2, a: "4/5", z: 12 },
+    { i: "dlt-13.webp", x: 76, y: 48, w: 8, r: 3, a: "3/4", z: 13 },
+    { i: "dlt-26.webp", x: 91, y: 59, w: 10, r: 3, a: "3/4", f: 1, z: 14 },
   ];
   const frag = document.createDocumentFragment();
   items.forEach((it) => {
     const el = document.createElement("div");
     el.className = "insta-item" + (it.f ? " frame" : "");
     el.style.cssText = `--x:${it.x};--y:${it.y};--w:${it.w};--r:${it.r};--z:${it.z};--a:${it.a}`;
-    el.innerHTML = `<img src="${U(it.i)}" alt="" loading="lazy">`;
+    el.innerHTML = `<img src="${U(it.i)}" alt="" loading="lazy" decoding="async">`;
     frag.appendChild(el);
   });
   board.prepend(frag);
@@ -198,12 +203,12 @@ if (subVideo) {
     scrollTrigger: { trigger: board, start: "top 75%", once: true },
   });
   // deriva suave a distintas velocidades al hacer scroll
-  els.forEach((el, i) => {
-    gsap.to(el, {
-      yPercent: (i % 3 - 1) * 9, ease: "none",
-      scrollTrigger: { trigger: board, start: "top bottom", end: "bottom top", scrub: 0.6 },
-    });
+  // (un solo ScrollTrigger para todo el collage en vez de uno por foto)
+  const drift = gsap.timeline({
+    defaults: { ease: "none", duration: 1 },
+    scrollTrigger: { trigger: board, start: "top bottom", end: "bottom top", scrub: 0.6 },
   });
+  els.forEach((el, i) => drift.to(el, { yPercent: (i % 3 - 1) * 9 }, 0));
 })();
 
 /* ---------- Historia: títulos palabra por palabra + líneas ---------- */
@@ -233,7 +238,7 @@ if (subVideo) {
   const board = document.getElementById("revBoard");
   if (!board) return;
   const MAP = "https://www.google.com/maps/search/?api=1&query=-31.4191439,-64.1867496";
-  const U = (id) => `images/${id}`;
+  const U = (id) => `images/sm/${id}`;
   // reseñas reales de Google Maps (textos acortados con … donde Maps los corta)
   const R = [
     ["Sergio", "Local Guide", "hace 3 meses", "Excelente atención de los chicos. Comimos una milanesa con puré y unas zucchini, muy rico todo, precios correctos…"],
@@ -250,18 +255,18 @@ if (subVideo) {
   const star = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.400 6.100 20.500l1.200-6.500L2.500 9.400l6.600-.9z"/></svg>';
   const stars = star.repeat(5);
   const rev = (k) => { const [n, g, w, t] = R[k]; return `<article class="rev-card"><div class="rev-stars" aria-label="5 estrellas">${stars}</div><q>${t}</q><p class="rev-who">${n}</p><p class="rev-meta">${g ? g + " · " : ""}${w}</p></article>`; };
-  const photo = (id, a = "1/1", bw = false) => `<div class="rev-tile${bw ? " bw" : ""}" style="--a:${a}"><img src="${U(id)}" alt="" loading="lazy"></div>`;
+  const photo = (id, a = "1/1", bw = false) => `<div class="rev-tile${bw ? " bw" : ""}" style="--a:${a}"><img src="${U(id)}" alt="" loading="lazy" decoding="async"></div>`;
   const stat = `<article class="rev-card stat dark"><span class="big">4,9</span><div class="rev-stars">${stars}</div><p class="rev-meta" style="margin-top:.7rem">502 reseñas en Google</p></article>`;
   const visit = `<article class="rev-card"><p class="kick">Contanos</p><h4>¿Ya nos visitaste?</h4><p>Contanos cómo fue tu experiencia en Google. ¡Tu opinión nos ayuda un montón!</p><a class="lnk" href="${MAP}" target="_blank" rel="noopener">Dejá tu reseña →</a></article>`;
   const where = `<article class="rev-card"><p class="kick">Dónde</p><h4>Obispo Trejo 305</h4><p>Córdoba, Argentina. Abierto todos los días, cerramos a las 21:30.</p><a class="lnk" href="${MAP}" target="_blank" rel="noopener">Cómo llegar →</a></article>`;
   const menu = `<article class="rev-card"><p class="kick">Del día</p><h4>Menú ejecutivo</h4><p>Plato principal, bebida y postre, todo casero. Cambia cada día.</p></article>`;
 
   const cols = [
-    [photo("dlt-27.jpg", "4/3", true), visit, photo("dlt-17.jpg"), rev(0)],
-    [photo("dlt-05.jpg", "4/3"), rev(1), photo("dlt-18.jpg", "3/4"), where, rev(4)],
-    [photo("dlt-28.jpg", "3/4", true), rev(2), photo("dlt-10.jpg", "4/3"), menu, rev(5)],
-    [photo("dlt-12.jpg", "5/4"), rev(3), stat, photo("dlt-22.jpg", "3/4"), rev(6)],
-    [photo("dlt-21.jpg", "3/4"), rev(7), photo("dlt-23.jpg", "1/1", true), rev(8), rev(9)],
+    [photo("dlt-27.webp", "4/3", true), visit, photo("dlt-17.webp"), rev(0)],
+    [photo("dlt-05.webp", "4/3"), rev(1), photo("dlt-18.webp", "3/4"), where, rev(4)],
+    [photo("dlt-28.webp", "3/4", true), rev(2), photo("dlt-10.webp", "4/3"), menu, rev(5)],
+    [photo("dlt-12.webp", "5/4"), rev(3), stat, photo("dlt-22.webp", "3/4"), rev(6)],
+    [photo("dlt-21.webp", "3/4"), rev(7), photo("dlt-23.webp", "1/1", true), rev(8), rev(9)],
   ];
   const dur = [78, 92, 70, 86, 74];
   board.innerHTML = cols.map((items, i) => {
@@ -291,7 +296,7 @@ if (subVideo) {
   };
   document.fonts.ready.then(fitMark);
   fitMark();
-  window.addEventListener("resize", fitMark);
+  window.addEventListener("resize", debounce(fitMark));
 
   /* Revelación sticky: solo si el footer cabe en la pantalla. En celular se compacta con acordeones
      para que entre y la cortina (el contenido) lo destape igual que en PC. */
@@ -303,7 +308,7 @@ if (subVideo) {
   window.updateFooterReveal = updateReveal;
   document.fonts.ready.then(updateReveal);
   updateReveal();
-  window.addEventListener("resize", updateReveal);
+  window.addEventListener("resize", debounce(updateReveal));
   window.addEventListener("load", updateReveal);
 
   // acordeones del footer (solo se ven como acordeón en pantallas angostas por CSS)

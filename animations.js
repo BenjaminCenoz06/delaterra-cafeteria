@@ -94,8 +94,8 @@
     const o = { v: 0 };
     gsap.from([word, sub], { yPercent: 110, autoAlpha: 0, duration: 1, ease: "power3.out", stagger: 0.12 });
     const tl = gsap.timeline({ delay: 0.2 });
-    tl.to(o, { v: 100, duration: 1.7, ease: "power2.inOut", onUpdate: () => (count.textContent = Math.round(o.v)) }, 0)
-      .to(bar, { scaleX: 1, duration: 1.7, ease: "power2.inOut" }, 0)
+    tl.to(o, { v: 100, duration: 1.3, ease: "power2.inOut", onUpdate: () => (count.textContent = Math.round(o.v)) }, 0)
+      .to(bar, { scaleX: 1, duration: 1.3, ease: "power2.inOut" }, 0)
       .to([word, sub], { yPercent: -110, autoAlpha: 0, duration: 0.6, ease: "power3.in", stagger: 0.06 }, "+=0.15")
       .to(pre, { clipPath: "inset(0 0 100% 0)", duration: 1.1, ease: "power4.inOut", onStart: finishLoad }, "-=0.2")
       .add(heroIntro, "-=0.55")
@@ -196,14 +196,24 @@
     const tw = dir > 0
       ? gsap.fromTo(track, { x: 0 }, { x: -unit, duration: 28, ease: "none", repeat: -1 })
       : gsap.fromTo(track, { x: -unit }, { x: 0, duration: 28, ease: "none", repeat: -1 });
-    let vel = 0;
+    tw.pause();
+    const setSkew = gsap.quickSetter(m, "skewX", "deg");
+    let vel = 0, active = false, lastSk = 0;
+    // solo corre mientras la banda está en pantalla
+    new IntersectionObserver(([e]) => { active = e.isIntersecting; active ? tw.resume() : tw.pause(); }, { rootMargin: "120px" }).observe(m);
     if (typeof lenis !== "undefined") lenis.on("scroll", (e) => { vel = e.velocity; });
     gsap.ticker.add(() => {
+      if (!active) return;
       vel *= 0.92;
       tw.timeScale(1 + Math.min(Math.abs(vel) * 0.35, 5));
-      gsap.set(m, { skewX: gsap.utils.clamp(-6, 6, vel * -0.25) });
+      const sk = gsap.utils.clamp(-6, 6, vel * -0.25);
+      if (Math.abs(sk - lastSk) > 0.01) { setSkew(sk); lastSk = sk; }
     });
   });
+
+  /* ---------- Pausar animaciones CSS infinitas cuando no se ven ---------- */
+  const pauseIO = new IntersectionObserver((entries) => entries.forEach((e) => e.target.classList.toggle("is-paused", !e.isIntersecting)), { rootMargin: "80px" });
+  $$(".rev-board, .ad, .insta-badge").forEach((el) => pauseIO.observe(el));
 
   /* ---------- Dibujos flotando ---------- */
   gsap.to(".doodle-pot, .insta-doodle, .doodle-table, .doodle-cup", {
@@ -218,16 +228,25 @@
   cur.className = "cursor"; document.body.appendChild(cur);
   const cx = gsap.quickTo(cur, "x", { duration: 0.45, ease: "power3" });
   const cy = gsap.quickTo(cur, "y", { duration: 0.45, ease: "power3" });
-  window.addEventListener("pointermove", (e) => {
-    cur.classList.add("on"); cx(e.clientX); cy(e.clientY);
+  let pev = null, praf = 0, lastTxt = "";
+  const cursorTick = () => {
+    praf = 0;
+    const e = pev; if (!e) return;
+    cx(e.clientX); cy(e.clientY);
     const t = e.target;
-    const link = t.closest("a, button, .car-media, .insta-item, .rev-card .lnk");
-    const view = t.closest(".insta-item, .car-media, .post img, .menu-photo");
-    cur.classList.toggle("is-link", !!link);
-    cur.classList.toggle("is-view", !!view && !t.closest("a, button"));
-    cur.textContent = view && !t.closest("a, button") ? "ver" : "";
+    const inAB = !!t.closest("a, button");
+    const link = !!t.closest("a, button, .car-media, .insta-item, .rev-card .lnk");
+    const view = !!t.closest(".insta-item, .car-media, .post img, .menu-photo") && !inAB;
+    cur.classList.toggle("is-link", link);
+    cur.classList.toggle("is-view", view);
+    const txt = view ? "ver" : "";
+    if (txt !== lastTxt) { cur.textContent = txt; lastTxt = txt; }
     cur.classList.toggle("on-dark", !!t.closest(".story, .subscribe, .site-footer, .mq-dark, .preloader"));
-  });
+  };
+  window.addEventListener("pointermove", (e) => {
+    pev = e; cur.classList.add("on");
+    if (!praf) praf = requestAnimationFrame(cursorTick);
+  }, { passive: true });
   document.addEventListener("pointerleave", () => cur.classList.remove("on"));
   gsap.to(cur, { scale: 1, duration: 0 });
   document.addEventListener("pointerdown", () => gsap.to(cur, { scale: 0.8, duration: 0.2 }));
