@@ -537,3 +537,61 @@ body.is-loading { overflow: hidden; }
 /* evita barra de scroll horizontal por las bandas inclinadas */
 html, body { overflow-x: clip; }
 .marquee { margin: 0 -2px; }
+
+/* =================== Móvil =================== */
+html { -webkit-tap-highlight-color: transparent; }
+.mw { flex: none; } /* la frase del footer no se encoge: así se ajusta bien al ancho */
+
+/* efecto de toque (reemplaza al cursor): onda que se expande */
+.tap-ripple {
+  position: fixed; z-index: 240; left: 0; top: 0; width: 70px; height: 70px; margin: -35px 0 0 -35px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(180, 103, 42, .45), rgba(180, 103, 42, 0) 70%); pointer-events: none;
+}
+
+@media (hover: none), (pointer: coarse) {
+  .tag:active, .story-btn:active, .car-btn:active, .foot-btn:active, .sub-link:active, .link-pill:active, .car-arrow:active, .social-row a:active {
+    transform: scale(.94); transition: transform .12s;
+  }
+  .items li:active { color: #b4672a; padding-left: .5rem; }
+  .link-pill .label { transition-duration: .3s; }
+}
+
+@media (max-width: 700px) {
+  /* header: logo y menú en una fila sin pisarse */
+  .site-header { padding: calc(.8rem + env(safe-area-inset-top, 0px)) var(--pad) .8rem; }
+  .site-header .site-grid { grid-template-columns: auto 1fr; grid-template-areas: "a b"; column-gap: 12px; }
+  .home-link { font-size: 14px; }
+  .buttons ul { column-gap: 14px; }
+  .link-pill { font-size: 12px; letter-spacing: .05em; }
+
+  /* collage de Instagram: cuadrícula escalonada con fotos grandes */
+  .insta-board { height: auto; display: grid; grid-template-columns: 1fr 1fr; gap: 14px; padding: 5.2rem 14px 5.5rem; align-items: start; }
+  .insta-item { position: relative; left: auto; top: auto; width: auto; }
+  .insta-item:nth-child(even) { margin-top: 2.4rem; }
+  .insta-item:nth-child(n+13):nth-child(-n+16) { display: none; }
+  .insta-item.frame { padding: 7px 7px 20px; }
+  .insta-item:nth-child(n+7) { order: 2; }
+  .insta-cta { position: relative; left: auto; top: auto; transform: none; grid-column: 1 / -1; order: 1; justify-self: center; margin: .6rem 0; font-size: 11px; z-index: 5; }
+  .insta-doodle { left: 6%; top: 1.4rem; width: 78px; }
+  .insta-ico { left: auto; right: 7%; top: 1.6rem; width: 34px; }
+  .insta-badge { left: 14px; top: auto; bottom: 1.4rem; width: 76px; }
+
+  /* mosaico de reseñas más alto para que respire */
+  .rev-board { height: min(640px, 150vw); gap: 10px; }
+  .rev-track { gap: 10px; }
+
+  /* títulos y bandas */
+  .marquee { padding: 1rem 0; }
+  .mq-group span { font-size: 2.3rem; }
+  .story { padding-left: 1.2rem; padding-right: 1.2rem; }
+  .story h2 { padding-right: 3.2rem; }
+  .doodle-cup { right: 0; }
+}
+
+@media (max-width: 800px) {
+  /* trío de fotos: tira horizontal que se desliza con el dedo */
+  .sub-trio { display: flex; overflow-x: auto; gap: 10px; padding: 12px; scroll-snap-type: x mandatory; scrollbar-width: none; background: #261712; -webkit-overflow-scrolling: touch; }
+  .sub-trio::-webkit-scrollbar { display: none; }
+  .sub-trio figure { flex: 0 0 78vw; aspect-ratio: 4 / 5; scroll-snap-align: center; border-radius: 8px; }
+  .car-viewport { touch-action: pan-y; }
+}

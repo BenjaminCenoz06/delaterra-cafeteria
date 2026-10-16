@@ -102,6 +102,16 @@ gsap.utils.toArray(".doodle path, .rule path").forEach((p) => {
   items.forEach((el, k) => el.querySelector(".car-media").addEventListener("click", () => go(k)));
   dots.forEach((d, k) => d.addEventListener("click", () => go(k)));
   window.addEventListener("resize", () => go(idx, true));
+  // deslizar con el dedo
+  const vp = root.querySelector(".car-viewport");
+  let sx = null, sy = null;
+  vp.addEventListener("touchstart", (e) => { sx = e.touches[0].clientX; sy = e.touches[0].clientY; }, { passive: true });
+  vp.addEventListener("touchend", (e) => {
+    if (sx === null) return;
+    const dx = e.changedTouches[0].clientX - sx, dy = e.changedTouches[0].clientY - sy;
+    sx = null;
+    if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) go(idx + (dx < 0 ? 1 : -1));
+  }, { passive: true });
   go(2, true);
 })();
 
@@ -282,7 +292,13 @@ document.querySelectorAll(".stats li").forEach((li, i) => {
   const fitMark = () => {
     mark.style.fontSize = "100px";
     const avail = mark.parentElement.clientWidth;
-    mark.style.fontSize = (100 * avail) / mark.scrollWidth + "px";
+    let size = 100;
+    // ajuste iterativo (el ancho no escala de forma perfectamente lineal)
+    for (let i = 0; i < 4; i++) {
+      size = (size * avail) / mark.scrollWidth;
+      mark.style.fontSize = size + "px";
+    }
+    mark.style.fontSize = size * 0.995 + "px";
   };
   document.fonts.ready.then(fitMark);
   fitMark();

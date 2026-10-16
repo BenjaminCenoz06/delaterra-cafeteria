@@ -4,7 +4,8 @@
    ===================================================================== */
 (() => {
   const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const fine = matchMedia("(hover: hover) and (pointer: fine)").matches;
+  // ?touch en la URL fuerza los efectos de celular (útil para probar desde una PC)
+  const fine = matchMedia("(hover: hover) and (pointer: fine)").matches && !/[?&]touch\b/.test(location.search);
   const $ = (s, r = document) => r.querySelector(s);
   const $$ = (s, r = document) => [...r.querySelectorAll(s)];
 
@@ -180,7 +181,7 @@
     immediateRender: false,
   });
 
-  if (!fine) return; // lo siguiente depende del mouse
+  if (!fine) { touchEffects(); return; } // en celular: efectos pensados para el dedo
 
   /* ---------- Cursor seguidor ---------- */
   const cur = document.createElement("div");
@@ -245,5 +246,60 @@
       items.forEach(({ qx, d }) => qx(nx * d * -4));
     });
     board.addEventListener("pointerleave", () => items.forEach(({ qx }) => qx(0)));
+  }
+
+  /* =====================================================================
+     Efectos para celular (equivalentes táctiles de cursor, imanes y tilt)
+     ===================================================================== */
+  function touchEffects() {
+    /* onda al tocar: reemplaza al cursor seguidor */
+    document.addEventListener("pointerdown", (e) => {
+      const r = document.createElement("span");
+      r.className = "tap-ripple";
+      document.body.appendChild(r);
+      gsap.fromTo(r, { x: e.clientX, y: e.clientY, scale: 0.15, opacity: 1 },
+        { scale: 2.6, opacity: 0, duration: 0.7, ease: "power2.out", onComplete: () => r.remove() });
+    }, { passive: true });
+
+    /* tarjetas e imágenes "se hunden" al tocarlas y rebotan al soltar */
+    $$(".post, .car-media, .insta-item, .rev-card, .menu-photo, .sub-trio figure").forEach((el) => {
+      el.addEventListener("touchstart", () => gsap.to(el, { scale: 0.965, duration: 0.25, ease: "power2.out" }), { passive: true });
+      const up = () => gsap.to(el, { scale: 1, duration: 0.7, ease: "elastic.out(1, .5)" });
+      el.addEventListener("touchend", up, { passive: true });
+      el.addEventListener("touchcancel", up, { passive: true });
+    });
+
+    /* en lugar del tilt con mouse: las tarjetas del blog entran inclinadas y se enderezan con el scroll */
+    $$(".post").forEach((el, i) => {
+      gsap.fromTo(el, { rotation: i % 2 ? 3 : -3 }, {
+        rotation: 0, ease: "none",
+        scrollTrigger: { trigger: el, start: "top 98%", end: "top 55%", scrub: true },
+      });
+    });
+
+    /* títulos gigantes: se deslizan apenas hacia los lados con el scroll */
+    $$(".story h2, .rev-head h2").forEach((h, i) => {
+      gsap.fromTo(h, { x: i % 2 ? 22 : -22 }, {
+        x: i % 2 ? -22 : 22, ease: "none",
+        scrollTrigger: { trigger: h, start: "top bottom", end: "bottom top", scrub: true },
+      });
+    });
+
+    /* collage de Instagram: cada foto entra con un giro distinto mientras haces scroll */
+    $$(".insta-item").forEach((el, i) => {
+      gsap.fromTo(el, { xPercent: i % 2 ? 14 : -14 }, {
+        xPercent: 0, ease: "none",
+        scrollTrigger: { trigger: el, start: "top 100%", end: "top 62%", scrub: true },
+      });
+    });
+
+    /* footer: sube desde abajo como una cortina al llegar al final (no hay sticky en celular) */
+    const foot = $(".site-footer");
+    if (foot) {
+      gsap.fromTo($(".foot-top", foot), { y: 90, opacity: 0.2 }, {
+        y: 0, opacity: 1, ease: "none",
+        scrollTrigger: { trigger: foot, start: "top bottom", end: "top 30%", scrub: true },
+      });
+    }
   }
 })();
