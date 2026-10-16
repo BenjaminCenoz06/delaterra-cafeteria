@@ -228,17 +228,6 @@ if (subVideo) {
   });
 })();
 
-/* ---------- Números: cuentan hasta su valor ---------- */
-document.querySelectorAll(".stats li").forEach((li, i) => {
-  const b = li.querySelector("[data-count]");
-  const target = +b.dataset.count, suffix = b.dataset.suffix || "";
-  const o = { v: 0 };
-  const tl = gsap.timeline({ scrollTrigger: { trigger: ".stats-row", start: "top 85%", once: true }, delay: i * 0.15 });
-  tl.from(li, { autoAlpha: 0, y: 30, duration: 0.8, ease: "power2.out" })
-    .to(o, { v: target, duration: 1.8, ease: "power2.out", onUpdate: () => (b.textContent = Math.round(o.v) + suffix) }, "<0.1")
-    .from(li.querySelector("p"), { autoAlpha: 0, y: 12, duration: 0.7, ease: "power2.out" }, "-=0.9");
-});
-
 /* ---------- Reseñas de Google Maps en mosaico ---------- */
 (() => {
   const board = document.getElementById("revBoard");
